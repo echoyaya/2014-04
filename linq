@@ -10,3 +10,6 @@ DirectoryInfo dirTarget = new DirectoryInfo(targetPath);
                 default: return "exist";
                   
             }
+
+
+IEnumerable<XElement> query = from elem in xdoc.Descendants("Corpus")  select elem;
