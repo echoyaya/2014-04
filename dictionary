@@ -50,3 +50,44 @@
                     notfindnum++;
                 }
             }
+
+
+
+
+
+====================================================================================================
+
+ Dictionary<string, string> Alist = new Dictionary<string, string>();             Dictionary<string, string> Blist = new Dictionary<string, string>(); 
+            Dictionary<string, string> diflist = new Dictionary<string, string>(); 
+            Dictionary<string, string> samelist = new Dictionary<string, string>(); 
+            //调用cd.GetScriptList方法，获取需要比较的文件列表 
+            CollectData cd = new CollectData(); 
+            List<string> Afiles = cd.GetScriptList(path); 
+            List<string> Bfiles = cd.GetScriptList(path); 
+            //调用GetXmlData方法，获取xml中需要比较的数据存放到list中 
+            Alist = GetXmlData(path,Afiles,"A"); 
+            Blist = GetXmlData(path,Bfiles,"B"); 
+            Console.WriteLine("Start to do comparing......"); 
+            //A有B没有 
+            IEnumerable<KeyValuePair<string, string>> INA = Alist.Except(Blist);           
+            //B有A没有 
+            IEnumerable<KeyValuePair<string, string>> INB = Blist.Except(Alist);   
+            //通过上面的结果整理成输出模式 
+            foreach (KeyValuePair<string, string> B_item in INB) 
+            { 
+                foreach (KeyValuePair<string, string> A_item in INA) 
+                { 
+                    if (B_item.Key == A_item.Key) 
+                    { 
+                        diflist.Add(B_item.Key, A_item.Value + "|" + B_item.Value); 
+                        break; 
+                    } 
+                } 
+            }   
+         
+            ////相同的 
+            //IEnumerable<KeyValuePair<string, string>> same = Alist.Intersect(Blist); 
+            //foreach (KeyValuePair<string, string> same_item in same) 
+            //{ 
+            //    samelist.Add(same_item.Key, same_item.Value+ "|" + same_item.Value); 
+            //}
