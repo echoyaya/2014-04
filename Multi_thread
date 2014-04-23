@@ -1,0 +1,32 @@
+
+List<Thread> ThreadList = new List<Thread>();
+                    string SignOffPath = args + @"\SignOff\";
+                    string configfile = "";
+                    string Transcriptionpath = "";
+                    string generatedfilename = "";
+                    string exename = @"\\svmtdata\cu\Projects\ANALYSIS\CompEvalProcess\Tools\TNTools\CallLMAnalysis.bat";
+
+                    for (int i = 0; i < languageType.Length; i++)
+                    {
+                        for (int j = 0; j < flavor.Length; j++)
+                        {
+                            Transcriptionpath = SignOffPath + languageType[i] + @"\" + flavor[j] + "\\VS\\Transcription.txt";
+                            configfile = @"\\qi-box1\Public\CompEval\Smd-WebsearchGrammars\websearch\" + languageType[i].ToLower() + @"\config.txt";
+                            generatedfilename = SignOffPath + languageType[i] + @"\" + flavor[j] + @"\VS\" + "transcription_perplexity_VS_" + languageType[i] + "_" + DateTime.Now.Month + "-" + DateTime.Now.Year + ".main.txt";
+
+                            string processname = languageType[i] + flavor[j];
+                            Process cmd = new Process();
+                            cmd.StartInfo.FileName = exename;
+                            cmd.StartInfo.Arguments = "" + configfile + "   " + Transcriptionpath + "   " + generatedfilename + "";
+                            cmd.StartInfo.CreateNoWindow = false;
+                            cmd.StartInfo.UseShellExecute = true;
+
+                            ThreadList.Add(new Thread(new ThreadStart(() => { cmd.Start(); cmd.WaitForExit(); })));
+                            ThreadList.Last().Start();
+                    }
+
+                       foreach (Thread t in ThreadList)
+                        {
+                            t.Join();
+                        }
+                    }
