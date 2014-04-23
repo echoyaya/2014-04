@@ -1,0 +1,35 @@
+foreach (FileInfo fi in DirLanguageDataFiles.GetFiles("*", SearchOption.AllDirectories))
+                        {
+                            if (!Directory.Exists(savepath + folderPath[j]))
+                                Directory.CreateDirectory(savepath + folderPath[j]);
+                            string aa= Helper.IfFileExist(fi.Name, savepath + folderPath[j]);
+                            if (aa=="not exist")
+                            {
+                                fi.CopyTo(savepath + folderPath[j] + "\\" + fi.Name);
+                            }
+
+                        }
+                        
+                        
+                        
+                        
+                        
+                        if (!Directory.Exists(savepath))
+                        Directory.CreateDirectory(savepath);
+                        
+                        
+                        
+                        DirectoryInfo DirPath = new DirectoryInfo(path);
+                        foreach (FileInfo fi in DirPath.GetFiles())
+                        {
+                            if (fi.Name.Contains(extension))
+                            {
+                                string ifFileExist = Helper.IfFileExist(fi.Name, folderpath);
+                                if (ifFileExist == "not exist")
+                                {
+                                    fi.CopyTo(folderpath + "\\" + fi.Name);
+                                    Console.WriteLine("Copy--" + fi.Name);
+                                }
+                            }
+
+                        }
