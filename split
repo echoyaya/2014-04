@@ -1,0 +1,1 @@
+ string[] str = item.Split(new string[] { "_" }, StringSplitOptions.RemoveEmptyEntries);
