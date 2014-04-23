@@ -13,3 +13,5 @@ DirectoryInfo dirTarget = new DirectoryInfo(targetPath);
 
 
 IEnumerable<XElement> query = from elem in xdoc.Descendants("Corpus")  select elem;
+================================
+var query = from line in File.ReadAllLines(filepath + @"\Mobile_Cortana_BTEST_en-US_Selfhost_08-12-2013_Test_Server_Result_absolute_location.tst") select line;
