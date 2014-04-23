@@ -1,0 +1,20 @@
+ XDocument xdoc = XDocument.Load(@"D:\Materials for New Days\Yonghui Liu\Tools for update corpus\Faroes_de-DE_Standalone_SD_LanguagePack_ServerD_Test.xml");
+
+IEnumerable<XElement> query = from elem in xdoc.Descendants("Corpus")  select elem;
+XElement temp = null;
+temp = query.Last();
+query.Remove();
+var lastNode = xdoc.Descendants("Group");
+
+temp.Attribute("name").SetValue(dalname);
+ temp.Attribute("fblstream").SetValue(itemdalss.StreamName.Trim());
+xdoc.Descendants("Group").SingleOrDefault().Add(temp);
+
+ FileStream fs = new FileStream(saveXMLname + ".log", FileMode.Create, FileAccess.Write);
+StreamWriter sw = new StreamWriter(fs, Encoding.Unicode);
+sw.WriteLine("writing:" + itemdalss.StreamName);
+sw.Close();
+ fs.Close();
+
+List<string> redofile_l = new List<string>();
+redofile_l.Add(CompEvalConfigID + "\t" + WaveFileID + "\t" + Locale +"\t"+wav_l[i]+ "\t" + trans_l[i] + "\t" + Description);
