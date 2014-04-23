@@ -1,0 +1,37 @@
+private static void RunCmd(string cmdfullname, string languageType)
+        {
+            string output = "";
+            try
+            {
+                Process cmd = new Process();
+
+                cmd.StartInfo.FileName = cmdfullname;
+                cmd.StartInfo.UseShellExecute = false;
+                cmd.StartInfo.RedirectStandardInput = true;
+                cmd.StartInfo.RedirectStandardOutput = true;
+                cmd.StartInfo.CreateNoWindow = true;
+                cmd.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                //string workdir="";
+                //cmd.StartInfo.Arguments = "'" + workdir + "','" + languageType + "'";
+                if (cmdfullname.Contains("OOV"))
+                {
+                    cmd.StartInfo.Arguments = languageType;
+                }
+                else
+                {
+                    string workdir = "";
+                    cmd.StartInfo.Arguments = "'" + workdir + "','" + languageType + "'";
+                }
+
+
+                cmd.Start();
+                output = cmd.StandardOutput.ReadToEnd();
+                Console.WriteLine(output);
+                cmd.WaitForExit();
+                cmd.Close();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
