@@ -1,0 +1,91 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml.Linq;
+using System.Xml;
+
+namespace UpdateCorpus
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            try
+            {
+                string inputpath = @"http://cosmos09.osdinfra.net:88/cosmos/IPE.Prod.Short/shares/ipe.cu/local/SpeechAMProd/Test/TestScripts/WindowsPhone/Console/";
+
+                var ConsoleLayer = VcClient.VC.GetDirectoryInfo(inputpath, false).ToArray();
+                foreach (var Lange in ConsoleLayer)
+                {
+                    //string languageType = Lange.StreamName.Substring(Lange.StreamName.Length - 6, 5);
+                    //http://cosmos09.osdinfra.net:88/cosmos/IPE.Prod.Short/shares/ipe.cu/local/SpeechAMProd/Test/TestScripts/Xbox/ConsoleOne/en-US/
+                    var LanguageLayer = VcClient.VC.GetDirectoryInfo(Lange.StreamName, false);
+                    List<string> list_LanguageType = Lange.StreamName.Split('/').Distinct().ToList();//(Lange.StreamName.Length - 6, 5);
+                    var liststr = Lange.StreamName.Split(new char[]{'/'}, StringSplitOptions.RemoveEmptyEntries);
+                    string languageType = list_LanguageType.Last();
+                    foreach (var CC in LanguageLayer)
+                    {
+                        List<string> list_CCType = CC.StreamName.Split('/').Distinct().ToList();
+                        string CCType = list_CCType.Last();
+                        //http://cosmos09.osdinfra.net:88/cosmos/IPE.Prod.Short/shares/ipe.cu/local/SpeechAMProd/Test/TestScripts/Xbox/ConsoleOne/en-US/OneCC/
+                        var Source = VcClient.VC.GetDirectoryInfo(CC.StreamName, false);
+                        foreach (var item in Source)
+                        {
+                            XDocument xdoc = XDocument.Load(@"D:\Materials for New Days\Yonghui Liu\Tools for update corpus\Faroes_de-DE_Standalone_SD_LanguagePack_ServerD_Test.xml");
+                            XNode xmlNode = xdoc.Descendants("Group").SingleOrDefault();
+                            IEnumerable<XElement> query = from elem in xdoc.Descendants("Corpus")
+                                                          select elem;
+                            XElement temp = null;
+                            temp = query.Last();
+                            query.Remove();
+                            var lastNode = xdoc.Descendants("Group");
+
+
+                            //string typesource = item.StreamName.Substring(item.StreamName.LastIndexOf('/'), item.StreamName.Length - 1);
+                            //http://cosmos09.osdinfra.net:88/cosmos/IPE.Prod.Short/shares/ipe.cu/local/SpeechAMProd/Test/TestScripts/Xbox/ConsoleOne/en-US/OneCC/AmbientNoises/
+                            var datetime = VcClient.VC.GetDirectoryInfo(item.StreamName, false);
+                            string time = datetime.Last().StreamName.Split('/').Distinct().ToList().Last();
+                            string sourcename = item.StreamName.Split('/').Distinct().ToList().Last(); //item.StreamName.Substring(item.StreamName.IndexOf(languageType) + 12, item.StreamName.Length - item.StreamName.IndexOf(languageType) - 13);
+                            var dalss = VcClient.VC.GetDirectoryInfo(datetime.Last().StreamName, false);
+
+                            string saveXMLname = args[0] + languageType + "_" + sourcename + "_" + time + "_" + CCType + ".xml";
+                            FileStream fs = new FileStream(saveXMLname + ".log", FileMode.Create, FileAccess.Write);
+                            StreamWriter sw = new StreamWriter(fs, Encoding.Unicode);
+
+                            foreach (var itemdalss in dalss)
+                            {
+                                if (itemdalss.StreamName.EndsWith(".dal.ss"))
+                                {
+                                    //WOV-oog_svmt_DVD_CFG_10_29_2013
+                                    string dalname = itemdalss.StreamName.Substring(itemdalss.StreamName.LastIndexOf('/') + 1, itemdalss.StreamName.Length - itemdalss.StreamName.LastIndexOf('/') - 12);
+                                    temp.Attribute("name").SetValue(dalname);
+                                    temp.Attribute("fblstream").SetValue(itemdalss.StreamName.Trim());
+                                    xdoc.Descendants("Group").SingleOrDefault().Add(temp);
+                                    sw.WriteLine("writing:" + itemdalss.StreamName);
+                                }
+                            }
+                            
+                            xdoc.Save(saveXMLname); //保存到XML文档
+                            sw.Close();
+                            fs.Close();
+                            Console.WriteLine(saveXMLname + "------done");
+                        }
+                    }
+
+                }
+                Console.WriteLine("All worrks have been done!");
+                Console.ReadKey();
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex);
+                Console.ResetColor();
+            }
+        }
+    }
+}
+
