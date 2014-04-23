@@ -1,0 +1,80 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.IO;
+using System.Xml.Linq;
+
+namespace GetFullPathForWave
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string wavepath = @"\\svmtdata\cu\Projects\WinphoneBlue\WP7_TestData\utterances\blind_en-US";
+            string filepath = @"\\svmtdata\cu\Users\AMUSRS\qimiao\share\forMikeE\absoluteLocationData";
+            string filename = "Mobile_Cortana_BTEST_en-US_Selfhost_08-12-2013_Test_Server_Result_absolute_location.tst";
+            DirectoryInfo dirwave = new DirectoryInfo(wavepath);
+            DirectoryInfo dirfile = new DirectoryInfo(filepath);
+            
+
+            //XDocument xdoc = XDocument.Load(wavepath + @"\Mobile_Cortana_BTEST_en-US_Selfhost_08-12-2013_Test_Server_Result_absolute_location.tst");
+            //foreach(var line in xdoc.)
+
+            FileStream fs = new FileStream(filepath + @"\Mobile_Cortana_BTEST_en-US_Selfhost_08-12-2013_Test_Server_Result_absolute_location_updated.tst", FileMode.Create, FileAccess.ReadWrite);
+            FileStream fs_log = new FileStream(filepath + @"\Mobile_Cortana_BTEST_en-US_Selfhost_08-12-2013_Test_Server_Result_absolute_location_updated.tst" + ".log", FileMode.Create, FileAccess.ReadWrite);
+            StreamWriter sw = new StreamWriter(fs, Encoding.Unicode);
+            StreamWriter sw_log = new StreamWriter(fs_log, Encoding.Unicode);
+            //List<string> wavelist = new List<string>();
+            //List<string> dups = new List<string>();
+            int linenum = 0;
+            int notfindnum = 0;
+            bool isFind = false;
+
+            var query = from line in File.ReadAllLines(filepath + @"\Mobile_Cortana_BTEST_en-US_Selfhost_08-12-2013_Test_Server_Result_absolute_location.tst") select line;
+            int count = query.Count();
+            foreach (var line in query)
+            {
+                if (linenum == 0)
+                {
+                    sw_log.WriteLine(line);
+                    sw.WriteLine(line);
+                    Console.WriteLine(line);
+                    linenum++;
+                }
+                else
+                {
+                    string wavename = line.Split('\t')[1];
+                    foreach(var waveinfolder in dirwave.GetFiles("*.wav", SearchOption.AllDirectories))
+                    {
+                        if (waveinfolder.Name == wavename)
+                        {
+                            string temp = line;
+                            temp = temp.Replace(wavename, waveinfolder.FullName);
+                            sw.WriteLine(temp);
+                            Console.WriteLine(temp);
+                            isFind = true;
+                        }
+                        else
+                            isFind = false;
+                    }
+                    if (isFind == false)
+                    {
+                        sw_log.WriteLine("Can not find the wave " + wavename);
+                        notfindnum++;
+                        Console.BackgroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Can not find the wave " + wavename);
+                        Console.ResetColor();
+                    }
+                    
+                }
+                
+            }
+            sw_log.WriteLine("Totally not find num: " + notfindnum);
+            sw_log.Close();
+            sw.Close();
+            fs_log.Close();
+            fs.Close();
+        }
+    }
+}
