@@ -1,0 +1,52 @@
+ foreach (var waveinfolder in dirwave.GetFiles("*.wav", SearchOption.AllDirectories))
+            {
+                if (!dic_waveinfolder.Keys.Contains(waveinfolder.Name))//for the sake of key value repeated 
+                {
+                    dic_waveinfolder.Add(waveinfolder.Name, waveinfolder.FullName);
+                }
+            }
+           
+            foreach (var line in query)
+            {
+                if (linenum != 0)
+                {
+                    string wavename = line.Split('\t')[1];
+                    if (!dic_waveinfile.Keys.Contains(wavename))//for the sake of key value repeated
+                    {
+                        dic_waveinfile.Add(wavename, line);
+                    }
+                }
+                else
+                {
+                    sw.WriteLine(line);
+                    linenum++;
+                }
+            }
+
+
+            foreach (KeyValuePair<string, string> waveinfile in dic_waveinfile)
+            {
+                foreach (KeyValuePair<string, string> waveinfolder in dic_waveinfolder)
+                {
+                    if (waveinfolder.Key.ToLower().Contains(waveinfile.Key.ToLower()))//dic_waveinfolder contains all waves of dic_waveinfile
+                    {
+                        sw.WriteLine(waveinfile.Value.Replace(waveinfile.Key, waveinfolder.Value));
+                        Console.WriteLine("-----" + waveinfile.Value.Replace(waveinfile.Key, waveinfolder.Value));
+                        isfind = true;
+                    }
+                    else
+                    {
+                        isfind = false;
+                    }
+                    if (isfind == true)
+                        break;
+                }
+                if (isfind == false)
+                {
+                    sw_log.WriteLine("Can not find the wave: " + waveinfile.Key);
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Can not find the wave: " + waveinfile.Key);
+                    Console.ResetColor();
+                    notfindnum++;
+                }
+            }
