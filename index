@@ -1,0 +1,104 @@
+ <%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Index.aspx.cs" Inherits="WebSiteForTest.Index" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>The automation test websit</title>
+
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script src="JS/jquery-1.9.1.min.js"></script>
+    <script src="JS/MyJS.js"></script>
+    <link href="css/smoothness/jquery-ui.min.css" rel="stylesheet" />
+    <script src="JS/jquery-ui.js"></script>
+    <script>
+        var StyleFile = "theme" + document.cookie.charAt(6) + ".css";
+        document.writeln('<link rel="stylesheet" type="text/css" href="css/' + StyleFile + '">');
+    </script>
+    <script>
+        $(function () { $("#tabs").tabs(); });
+    </script>
+    <!--[if IE]>
+<link rel="stylesheet" type="text/css" href="css/ie-sucks.css" />
+<![endif]-->
+</head>
+<body>
+    <form id="form1" runat="server">
+
+        <div id="container">
+            <div id="header">
+                <h2>The automation test websit</h2>
+                <div id="topmenu">
+                    <ul>
+                        <li class="current"><a href="index.aspx">New Test</a></li>                        
+                        <%--<li><a href="XBoxServer.aspx">Running Test</a></li>--%>
+                    </ul>
+                </div>
+            </div>
+            <div id="wrapper">
+                <div id="content">
+                    <div id="tabs">
+                        <ul>
+                            <li><a href="#tabs-1">Configuration</a></li>
+                            <li><a href="#tabs-2">Waitting</a></li>
+                        </ul>
+                        <div id="tabs-1">
+                            <p>WinPhone</p>
+                            <div>
+                                <p id="WindowsPhone">
+                                    Language:<br />
+                                </p>
+                            </div>
+                            <p>WinPhoneDNN</p>
+                            <div>
+                                <p id="WindowsPhone_DNN">
+                                    Language:<br />
+                                </p>
+                            </div>
+                            <p>WinPhone16k_en-US</p>
+                            <div>
+                                <p id="WinPhone16k">
+                                    Language:<br />
+                                </p>
+                            </div>
+                            <div style="margin-top: 20px;">
+                                <input type="button" id="btnConfirm" value="Confirm" />
+                            </div>
+                            <p id="Prompt_Info"></p>
+                        </div>
+                        <div id="tabs-2">
+                        </div>
+                    </div>
+                </div>
+                <div id="sidebar">
+                    <ul>
+                        <li>
+                            <h3><a href="#" class="house">New Test</a></h3>
+                        </li>
+                        <%--<li>
+                            <h3><a href="#" class="folder_table">Running Test</a></h3>
+                        </li>--%>
+                    </ul>
+                </div>
+            </div>
+            <div id="footer">
+                <div id="credits">
+                    Chinasoft Speech Team
+                </div>
+                <div id="styleswitcher">
+                    <ul>
+                        <li><a href="javascript: document.cookie='theme='; window.location.reload();" title="Blue" id="blueswitch">d</a></li>
+                        <li><a href="javascript: document.cookie='theme=1'; window.location.reload();" title="Default" id="defswitch">b</a></li>
+                        <li><a href="javascript: document.cookie='theme=2'; window.location.reload();" title="Green" id="greenswitch">g</a></li>
+                        <li><a href="javascript: document.cookie='theme=3'; window.location.reload();" title="Brown" id="brownswitch">b</a></li>
+                        <li><a href="javascript: document.cookie='theme=4'; window.location.reload();" title="Mix" id="mixswitch">m</a></li>
+                    </ul>
+                </div>
+                <br />
+
+            </div>
+        </div>
+    </form>
+</body>
+</html>
