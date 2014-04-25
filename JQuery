@@ -1,0 +1,181 @@
+/// <reference path="jquery-1.9.1.js" />
+
+
+$("document").ready(function () {
+    $.post("../Handle/Handler.ashx", { flag: "FirstLoad",type:"WinPhone" }).done(function (data) {
+        //show the language
+        $("#WindowsPhone").append(data);
+        
+        //add the click event to the single language
+        var listLanguageWP = $(".WP");
+        for (var i = 0; i < listLanguageWP.length; i++) {
+            $(listLanguageWP[i]).change(function () {
+                var input = $(this);
+                var language = $(input).val();
+
+                if ($(input).prop("checked")) {
+                    $.post("../Handle/Handler.ashx", { flag: "SubService",type:"WinPhone" }).done(function (data) {
+                        $("#WP_" + language).append(data);
+                    });
+                }
+                else {
+                    $("#WP_" + language).empty();
+                }
+            });
+        }        
+    });
+
+    $.post("../Handle/Handler.ashx", { flag: "FirstLoad", type: "WinPhoneDNN" }).done(function (data) {
+        //show the language
+        $("#WindowsPhone_DNN").append(data)
+
+
+        //add the click event to the single language
+        var listLanguageWP = $(".WPDNN");
+        for (var i = 0; i < listLanguageWP.length; i++) {
+            $(listLanguageWP[i]).change(function () {
+                var input = $(this);
+                var language = $(input).val();
+
+                if ($(input).prop("checked")) {
+                    $.post("../Handle/Handler.ashx", { flag: "SubService", type: "WinPhoneDNN" }).done(function (data) {
+                        $("#WPDNN_" + language).append(data);
+                    });
+                }
+                else {
+                    $("#WPDNN_" + language).empty();
+                }
+            });
+        }
+    });
+
+    $.post("../Handle/Handler.ashx", { flag: "FirstLoad", type: "WinPhone16k" }).done(function (data) {
+        //show the language
+        $("#WinPhone16k").append(data)
+
+
+        //add the click event to the single language
+        var listLanguageWP = $(".WP16k");
+        for (var i = 0; i < listLanguageWP.length; i++) {
+            $(listLanguageWP[i]).change(function () {
+                var input = $(this);
+                var language = $(input).val();
+
+                if ($(input).prop("checked")) {
+                    $.post("../Handle/Handler.ashx", { flag: "SubService", type: "WinPhone16k" }).done(function (data) {
+                        $("#WP16k_" + language).append(data);
+                    });
+                }
+                else {
+                    $("#WP16k_" + language).empty();
+                }
+            });
+        }
+    });
+
+    //the Confirm button's click event
+    $("#btnConfirm").click(function () {
+        //get the string of WindowPhone
+        var strWindowsPhone = "";        
+        var MyString = "";
+        var listLanguageWP = $(".WP");
+        for (var i = 0; i < listLanguageWP.length; i++) {
+            if (listLanguageWP[i].checked) {
+                //strWindowsPhone = strWindowsPhone + listLanguageWP[i].value;
+                var language = $(listLanguageWP[i]).val();
+                var strWindowsPhoneSubService = "";
+                var SubService = $("#WP_" + language + " > input")
+                var verifyIFSelect = "";
+                for (var j = 0; j < SubService.length; j++) {                    
+                    if (SubService[j].checked) {
+                        verifyIFSelect = verifyIFSelect + $(SubService[j]).val();
+                        strWindowsPhoneSubService = strWindowsPhoneSubService + "_" + $(SubService[j]).val() + " ";
+                    }                    
+                }
+                if (verifyIFSelect == "") {
+                    alert("Please select the service of " + language + " for WinPhone");
+                    return;
+                }
+                MyString =MyString+ language + ":" + strWindowsPhoneSubService;
+            }
+        }
+        //get the string of WindowPhoneDNN
+        var strWindowsPhoneDNN = "";
+        var MyString_DNN = "";
+        var listLanguageWP = $(".WPDNN");
+        for (var i = 0; i < listLanguageWP.length; i++) {
+            if (listLanguageWP[i].checked) {
+                //strWindowsPhoneDNN = strWindowsPhoneDNN + listLanguageWP[i].value;
+                var language = $(listLanguageWP[i]).val();
+                var strWindowsPhoneDNNSubService = "";
+                var SubService = $("#WPDNN_" + language + " > input")
+                var verifyIFSelect = "";
+                for (var j = 0; j < SubService.length; j++) {
+                    if (SubService[j].checked) {
+                        verifyIFSelect = verifyIFSelect + $(SubService[j]).val();
+                        strWindowsPhoneDNNSubService = strWindowsPhoneDNNSubService + "_" + $(SubService[j]).val() + " ";
+                    }
+                }
+                if (verifyIFSelect == "") {
+                    alert("Please select the service of " + language +" for WinPhoneDNN");
+                    return;
+                }
+                MyString_DNN = MyString_DNN + language + ":" + strWindowsPhoneDNNSubService;
+            }
+        }
+
+        //get the string of WindowPhone16k
+        var strWindowsPhone16k = "";
+        var MyString_16k = ""; 
+        var listLanguageWP = $(".WP16k");
+        for (var i = 0; i < listLanguageWP.length; i++) {
+            if (listLanguageWP[i].checked) {
+                //strWindowsPhone16k = strWindowsPhone16k + listLanguageWP[i].value;
+                var language = $(listLanguageWP[i]).val();
+                var strWindowsPhone16kSubService = "";
+                var SubService = $("#WP16k_" + language + " > input")
+                var verifyIFSelect = "";
+                for (var j = 0; j < SubService.length; j++) {
+                    if (SubService[j].checked) {
+                        verifyIFSelect = verifyIFSelect + $(SubService[j]).val();
+                        strWindowsPhone16kSubService = strWindowsPhone16kSubService + "_" + $(SubService[j]).val() + " ";
+                    }
+                }
+                if (verifyIFSelect == "") {
+                    alert("Please select the service of " + language + " for WinPhone16k");
+                    return;
+                }
+                MyString_16k = MyString_16k + language + ":" + strWindowsPhone16kSubService;
+            }
+        }
+
+        //if no one is selected 
+        if (MyString.length==0 && MyString_DNN.length==0 &&MyString_16k==0 ) {
+            alert("You didn't select anything!");
+            return;
+        }
+        //submit to the server
+        $.post("../Index.aspx", { flag: "submit", strWP: MyString,strWPDNN:MyString_DNN,strWP16k:MyString_16k }).done(function (data) {
+            if (data.length!=0) {                
+                if (confirm("Do you want to edit the corpus of the configs you selected!")) {
+                    window.location.href = "UpdateCorpus.aspx?strWP="+ MyString+"&strWPDNN="+MyString_DNN+"&strWP16k="+MyString_16k;
+                }
+                else {
+                    $("#Prompt_Info").text(data);
+                }
+            }
+            else {
+                alert("There is something wrong, please contact the websit Administrator!");
+            }
+        });
+    });
+
+
+});
+
+
+//function btnConfirm() {
+//    $.post("Handler.ashx", { flag: "FirstLoad" }, function (data) {
+//        $("#WindowsPhone").append(data);
+//    });
+//};
